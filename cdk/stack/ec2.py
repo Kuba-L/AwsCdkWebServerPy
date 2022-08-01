@@ -21,25 +21,25 @@ class Ec2Stack(Stack):
         super().__init__(scope, id, **kwargs)
 
         alb_sg = ec2.SecurityGroup(self, "alb-sg",vpc=vpc)
-        # alb_sg.add_ingress_rule(ec2.Peer.ipv4("63.35.68.30/32"),
-        #                         ec2.Port.tcp(80),
-        #                         "allow priv ip")
+        alb_sg.add_ingress_rule(ec2.Peer.ipv4("63.35.68.30/32"),
+                                ec2.Port.tcp(80),
+                                "allow priv ip")
         
         # for now from anywhere anyway
-        alb_sg.add_ingress_rule(ec2.Peer.any_ipv4(),
-                                ec2.Port.tcp(80),
-                                "allow from anywhere")
+        # alb_sg.add_ingress_rule(ec2.Peer.any_ipv4(),
+        #                         ec2.Port.tcp(80),
+        #                         "allow from anywhere")
 
-        alb = elb.ApplicationLoadBalancer(self, "alb",
+        self.alb = elb.ApplicationLoadBalancer(self, "alb",
                                           vpc=vpc,
                                           internet_facing=True,
                                           load_balancer_name="alb",
                                           security_group=alb_sg
                                           )
 
-        listener = alb.add_listener("listening_on_80",
-                                    port=80,
-                                    open=True)
+        listener = self.alb.add_listener("listening_on_80",
+                                            port=80,
+                                            open=True)
 
         # adding SSM to setup the web server
         role = iam.Role(self, "InstanceSSM", assumed_by=iam.ServicePrincipal("ec2.amazonaws.com"))
@@ -74,7 +74,7 @@ class Ec2Stack(Stack):
             max_capacity=1,
         )
 
-        self.asg.connections.allow_from(alb, ec2.Port.tcp(80), "ALB access 80 port of EC2 in Autoscaling Group")
+        self.asg.connections.allow_from(self.alb, ec2.Port.tcp(80), "ALB access 80 port of EC2 in Autoscaling Group")
 
         listener.add_targets("addTargetGroup",
                              port=80,
