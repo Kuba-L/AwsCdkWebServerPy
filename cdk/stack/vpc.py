@@ -15,10 +15,7 @@ class VpcStack(Stack):
                                 subnet_type=ec2.SubnetType.PUBLIC,
                                 name="Public",
                                 cidr_mask=24,
-                                map_public_ip_on_launch=True,
                             )],
-                            enable_dns_support=True,
-                            enable_dns_hostnames=True,
                             )
 
         CfnOutput(self, "Output",
