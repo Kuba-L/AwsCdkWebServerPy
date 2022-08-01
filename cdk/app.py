@@ -5,7 +5,7 @@ from stack.ec2 import Ec2Stack
 
 
 app = cdk.App()
-vpc_stack = VpcStack(app, "VpcStackx")
-ec2_stack = Ec2Stack(app, "Ec2Stackx", vpc=vpc_stack.vpc)
+vpc_stack = VpcStack(app, "VpcStack")
+ec2_stack = Ec2Stack(app, "Ec2Stack", vpc=vpc_stack.vpc)
 
 app.synth()
