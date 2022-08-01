@@ -13,7 +13,6 @@ class S3Stack(Stack):
                                 block_public_access=s3.BlockPublicAccess.BLOCK_ALL,  # type: ignore
                                 )
                                 
-
         self.artifacts_deployment = s3_deployment.BucketDeployment(self,'deployWebArtifact',
                                                                     destination_bucket=self.artifacts_bucket,
                                                                     sources=[s3_deployment.Source.asset('./www/')],
