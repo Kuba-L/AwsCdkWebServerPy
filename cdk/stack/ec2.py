@@ -59,7 +59,7 @@ class Ec2Stack(Stack):
                                                 )
 
         self.asg.scale_on_schedule("ScaleUpAt14",
-            schedule=autoscaling.Schedule.cron(hour="14", minute="00"),
+            schedule=autoscaling.Schedule.cron(hour="14", minute="0"),
             time_zone="CET",
             desired_capacity=2,
             min_capacity=2,
@@ -67,7 +67,7 @@ class Ec2Stack(Stack):
         )
 
         self.asg.scale_on_schedule("ScaleDownAt18",
-            schedule=autoscaling.Schedule.cron(hour="18", minute="00"),
+            schedule=autoscaling.Schedule.cron(hour="18", minute="0"),
             time_zone="CET",
             desired_capacity=1,
             min_capacity=1,
