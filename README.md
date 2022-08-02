@@ -27,7 +27,8 @@ cdk deploy --all
 ```
 
 ### How to connect to existing
-link goes here
+Only open to 63.35.68.30/32
+http://alb-1639883467.eu-west-1.elb.amazonaws.com/
 
 ### R53 part
 R53 part commented out.
