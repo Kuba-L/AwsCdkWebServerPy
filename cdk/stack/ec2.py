@@ -1,4 +1,5 @@
 from aws_cdk import Stack
+import aws_cdk.aws_s3 as s3
 import aws_cdk.aws_iam as iam
 import aws_cdk.aws_ec2 as ec2
 import aws_cdk.aws_elasticloadbalancingv2 as elb
@@ -17,7 +18,7 @@ with open("./user_data/user_data.sh") as f:
 
 class Ec2Stack(Stack):
 
-    def __init__(self, scope: Construct, id: str, vpc, **kwargs) -> None:
+    def __init__(self, scope: Construct, id: str, vpc, bucket: s3.Bucket, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         alb_sg = ec2.SecurityGroup(self, "alb-sg",vpc=vpc)
@@ -41,10 +42,14 @@ class Ec2Stack(Stack):
                                             port=80,
                                             open=True)
 
-        # adding SSM to setup the web server
-        role = iam.Role(self, "InstanceSSM", assumed_by=iam.ServicePrincipal("ec2.amazonaws.com"))
 
-        role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name("AmazonSSMManagedInstanceCore"))
+        ssm_policy = iam.ManagedPolicy.from_aws_managed_policy_name("AmazonSSMManagedInstanceCore")
+
+        role = iam.Role(self, "WebRole", 
+                        assumed_by=iam.ServicePrincipal("ec2.amazonaws.com"),
+                        managed_policies=[ssm_policy])
+        
+        bucket.grant_read(role)
 
         self.asg = autoscaling.AutoScalingGroup(self, "myASG",
                                                 vpc=vpc,
