@@ -22,14 +22,13 @@ class Ec2Stack(Stack):
         super().__init__(scope, id, **kwargs)
 
         alb_sg = ec2.SecurityGroup(self, "alb-sg",vpc=vpc)
-        alb_sg.add_ingress_rule(ec2.Peer.ipv4("63.35.68.30/32"),
-                                ec2.Port.tcp(80),
-                                "allow priv ip")
+#         alb_sg.add_ingress_rule(ec2.Peer.ipv4("xx.xx.xx.xx/32"),
+#                                 ec2.Port.tcp(80),
+#                                 "allow priv ip")
         
-        # for now from anywhere anyway
-        # alb_sg.add_ingress_rule(ec2.Peer.any_ipv4(),
-        #                         ec2.Port.tcp(80),
-        #                         "allow from anywhere")
+        alb_sg.add_ingress_rule(ec2.Peer.any_ipv4(),
+                                ec2.Port.tcp(80),
+                                "allow from anywhere")
 
         self.alb = elb.ApplicationLoadBalancer(self, "alb",
                                           vpc=vpc,
